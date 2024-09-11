@@ -14,9 +14,9 @@
 
 ; generate API path
 (define/contract (puzzle-path year day endpoint)
-  (-> string? string? (or/c "input" "answer" false/c) path?)
-  (define base (build-path "/" year "day" day))
-  (if endpoint (build-path base endpoint) base))
+  (-> string? string? (or/c "input" "answer" false/c) string?)
+  (define base (string-append "/" year "/day/" day))
+  (if endpoint (string-append base "/" endpoint) base))
 
 ; sets necessary headers for API
 (define (make-headers session)
@@ -24,8 +24,7 @@
         "Content-Type: application/x-www-form-urlencoded"))
 
 ; http request helper
-(define (aoc-request year day endpoint session
-                     [method 'GET] [data #f])
+(define (aoc-request endpoint session [method 'GET] [data #f])
   (define (parse-headers hlist)
     (for/list ([h (in-list hlist)])
       (match h
@@ -56,14 +55,14 @@
               stat
               "\n response: "
               (port->bytes content))]))
-  (do-request (path->string (puzzle-path year day endpoint))
+  (do-request endpoint
               (make-headers session)
               method data))
 
 ; gets the input file for a challenge
 (define/contract (aoc-fetch-input year day session)
   (-> string? string? string? input-port?)
-  (aoc-request year day "input" session))
+  (aoc-request (puzzle-path year day "input") session))
 
 ; submits an answer to the server
 (define/contract (aoc-submit-answer year day session part answer)
@@ -89,7 +88,7 @@
 ; fetches the HTML page for a challenge
 (define/contract (aoc-fetch-challenge year day session)
   (-> string? string? string? input-port?)
-  (aoc-request year day #f session))
+  (aoc-request (puzzle-path year day #f) session))
 
 ; generates entries for the challenge status file
 (define (day+part->key day part)

@@ -1,4 +1,4 @@
-Advent of Code 2023
+# Advent of Code 2023
 
 ### Credits
 Credits to [Hazel](https://git.bicompact.space/hazel/aoc-2021) for providing a neat setup and answering my questions about such setup. They have credited [haskal](https://git.lain.faith/haskal/aoc2020/src/branch/aoc2020/scripts) as well.
